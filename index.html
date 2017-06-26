@@ -1,0 +1,88 @@
+<link rel="stylesheet" href="http://bootstraptema.ru/plugins/2015/bootstrap3/bootstrap.min.css" />
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css">
+<script src="js/bootstrap.js" type="text/javascript"></script>
+
+<style>
+.form-control{margin-bottom:10px}
+</style>
+        <div class = "container">
+            <div class = "row">
+                <div class = "messages chat col-md-12">
+                    <ul class="list-group">
+                    </ul>               
+                    <div class="from-group">
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4 well well-sm">
+                            <label for="exampleTextarea">Online-chat</label>
+                            <div id="error-container"></div>
+                            <input id="name" type="text" name="name" value="" placeholder="Введите Ваше имя">
+                            <button type="button" name="button" onclick="setUsername()">Присоединиться к чату</button><br></br>
+                            <form  action="#" method="post" class="form" role="form">                        
+                            <textarea name="publish" class="from-control m" id="exampleTextarea" rows="10" cols="48" required="required" placeholder="Введите сообщение"></textarea>                           
+                            <br><br>                            
+                    <div class="from-group">
+                        <button type="button" class="btn btn-success btn-sm btn-block send" >Отправить Сообщение</button>
+                        <i class="icon-search icon-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script src = "/socket.io/socket.io.js"></script> <!-- 3. Для того, что бы наш клиент установил соединние с веб-сокетом, нам необходимо подключить библиотеку Soket.io.js -->
+<script>
+
+
+  var socket = io("http://localhost:3000"); // 4. Создать текущий объект сокет, обратиться к объекту "io" и передать туда адрес нашего веб-сокета
+
+    function setUsername(){
+            socket.emit('setUsername', document.getElementById('name').value);
+        };
+        var user;
+        socket.on('userExists', function(data){
+            document.getElementById('error-container').innerHTML = data;
+        });
+        socket.on('userSet', function(data){
+            user = data.username;
+            document.body.innerHTML = '<input type="text" id="message">\
+            <button type="button" name="button" onclick="sendMessage()">Send</button>\
+            <div id="message-container"></div>';
+        });
+        function sendMessage(){
+            var msg = document.getElementById('message').value;
+            if(msg){
+                socket.emit('msg', {message: msg, user: user});
+            }
+        }
+        socket.on('newmsg', function(data){
+            if(user){
+                document.getElementById('message-container').innerHTML += '<div><b>' + data.user + '</b>: ' + data.message + '</div>'
+            }
+        })
+
+ 
+
+  document.querySelector('.send')
+    .addEventListener('click', ev => {                   //5. Далее, мы повесили обработчик событий "Click" на нашу кнопку и 
+      let text = document.querySelector('.m').value;    //      когда пользователь нажимает на кнопку мы достаем
+      socket.emit('message', text);                    //       отуда текст.Обращаемся к текущему объекту "socket" и передаем туда новое событие "message", и наше сообщение.
+    })                                                
+
+    socket.on('new message', function(data){ // 7. Дальше мы на стороне клиента отлавливаем событие "new message". Т.е. когда произойдет событие "new message" мы его отлавливаем, вызываем callback функцию с данными которыми получили от нашего веб-сокета.
+      let li = document.createElement('li'); // 8. Создаем новый элемент "li" и добавляем его на нашу страницу.
+      li.textContent = data;
+      li.classList.add('list-group-item');
+
+      document.querySelector('.list-group').appendChild(li);
+    })
+</script> 
+
+<!-- Фон (background) --> 
+<style>
+body{
+background: #159957; 
+background: -webkit-linear-gradient(to right, #155799, #159957); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #155799, #159957); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+</style>
+
+
