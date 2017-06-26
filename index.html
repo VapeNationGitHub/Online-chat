@@ -18,12 +18,8 @@
                             <div id="error-container"></div>
                             <input id="name" type="text" name="name" value="" placeholder="Введите Ваше имя">
                             <button type="button" name="button" onclick="setUsername()">Присоединиться к чату</button><br></br>
-                            <form  action="#" method="post" class="form" role="form">                        
-                            <textarea name="publish" class="from-control m" id="exampleTextarea" rows="10" cols="48" required="required" placeholder="Введите сообщение"></textarea>                           
-                            <br><br>                            
+                            <form  action="#" method="post" class="form" role="form">                                                  
                     <div class="from-group">
-                        <button type="button" class="btn btn-success btn-sm btn-block send" >Отправить Сообщение</button>
-                        <i class="icon-search icon-white"></i>
                     </div>
                 </div>
             </div>
@@ -44,9 +40,13 @@
         socket.on('userSet', function(data){
             user = data.username;
             document.body.innerHTML = '<input type="text" id="message">\
-            <button type="button" name="button" onclick="sendMessage()">Send</button>\
+            <style> body{ background: #159957; background: -webkit-linear-gradient(to right, #155799, #159957); background: linear-gradient(to right, #155799, #159957);}</style>\
+            <textarea name="publish" class="from-control m" id="exampleTextarea" rows="10" cols="48" required="required" placeholder="Введите сообщение"></textarea>\
+            <button type="button" class="btn btn-success btn-sm btn-block send" name="button" onclick="sendMessage()" >Отправить Сообщение</button> <i class="icon-search icon-white"></i>\
+            <ul class="list-group">\
             <div id="message-container"></div>';
         });
+        
         function sendMessage(){
             var msg = document.getElementById('message').value;
             if(msg){
