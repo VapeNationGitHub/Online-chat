@@ -39,7 +39,6 @@ io.on('connection', function(socket){              // 2. Установили с
 
 
   socket.on('msg', function(data){
-      //Send message to everyone
       io.sockets.emit('newmsg', data);
   })
 });
