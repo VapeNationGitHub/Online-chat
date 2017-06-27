@@ -15,7 +15,7 @@
                     <div class="from-group">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4 well well-sm">
                             <label for="exampleTextarea">Online-chat</label>
-                            <div id="error-container"></div>
+                            <div id="list-group"></div>
                             <input id="name" type="text" name="name" value="" placeholder="Введите Ваше имя">
                             <button type="button" name="button" onclick="setUsername()">Присоединиться к чату</button><br></br>
                             <form  action="#" method="post" class="form" role="form">                                                  
@@ -27,57 +27,41 @@
 <script src = "/socket.io/socket.io.js"></script> <!-- 3. Для того, что бы наш клиент установил соединние с веб-сокетом, нам необходимо подключить библиотеку Soket.io.js -->
 <script>
 
-
   var socket = io("http://localhost:3000"); // 4. Создать текущий объект сокет, обратиться к объекту "io" и передать туда адрес нашего веб-сокета
 
     function setUsername(){
             socket.emit('setUsername', document.getElementById('name').value);
         };
+        
         var user;
         socket.on('userExists', function(data){
-            document.getElementById('error-container').innerHTML = data;
+            document.getElementById('list-group').innerHTML = data;
         });
+        
         socket.on('userSet', function(data){
             user = data.username;
-            document.body.innerHTML = '<input type="text" id="message">\
-            <style> body{ background: #159957; background: -webkit-linear-gradient(to right, #155799, #159957); background: linear-gradient(to right, #155799, #159957);}</style>\
+            document.body.innerHTML = 
+            '<div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4 well well-sm">\
             <ul class="list-group">\
-            <textarea name="publish" class="from-control m" id="exampleTextarea" rows="10" cols="48" required="required" placeholder="Введите сообщение"></textarea>\
-            <button type="button" class="btn btn-success btn-sm btn-block send" name="button" onclick="sendMessage()" >Отправить Сообщение</button> <i class="icon-search icon-white"></i>\
-            <ul class="list-group">\
-            <div id="message-container"></div>';
+            <textarea type="text" id="message" name="publish" class="from-control m" rows="10" cols="48" required="required" placeholder="Введите сообщение"></textarea>\
+            <button type="button" class="btn btn-success btn-sm btn-block send" name="button" onclick="sendMessage()" >Отправить Сообщение</button> <i class="icon-search icon-white"></i>';   
         });
-        
-        
+               
         function sendMessage(){
             var msg = document.getElementById('message').value;
             if(msg){
-                socket.emit('msg', {message: msg, user: user});
+                socket.emit('msg', {user: user, message: msg}); 
             }
         }
-               
         socket.on('newmsg', function(data){
             if(user){
-                document.getElementById('message-container').innerHTML += '<div><b>' + data.user + '</b>: ' + data.message + '</div>'
-
+                let li =document.createElement('li');
+                li.textContent = data.message;
+                li.classList.add('list-group-item');
+                document.querySelector('.list-group').appendChild(li);
             }
         })
 
- 
-
-  document.querySelector('.send')
-    .addEventListener('click', ev => {                   //5. Далее, мы повесили обработчик событий "Click" на нашу кнопку и 
-      let text = document.querySelector('.m').value;    //      когда пользователь нажимает на кнопку мы достаем
-      socket.emit('message', text);                    //       отуда текст.Обращаемся к текущему объекту "socket" и передаем туда новое событие "message", и наше сообщение.
-    })                                                
-
-    socket.on('new message', function(data){ // 7. Дальше мы на стороне клиента отлавливаем событие "new message". Т.е. когда произойдет событие "new message" мы его отлавливаем, вызываем callback функцию с данными которыми получили от нашего веб-сокета.
-      let li = document.createElement('li'); // 8. Создаем новый элемент "li" и добавляем его на нашу страницу.
-      li.textContent = data;
-      li.classList.add('list-group-item');
-
-      document.querySelector('.list-group').appendChild(li);
-    })
 </script> 
 
 <!-- Фон (background) --> 
