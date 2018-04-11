@@ -24,10 +24,10 @@
                 </div>
             </div>
         </div>
-<script src = "/socket.io/socket.io.js"></script> <!-- 3. Для того, что бы наш клиент установил соединние с веб-сокетом, нам необходимо подключить библиотеку Soket.io.js -->
+<script src = "/socket.io/socket.io.js"></script>
 <script>
 
-  var socket = io("http://localhost:3000"); // 4. Создать текущий объект сокет, обратиться к объекту "io" и передать туда адрес нашего веб-сокета
+  var socket = io("http://localhost:3000");
 
     function setUsername(){
             socket.emit('setUsername', document.getElementById('name').value);
@@ -63,8 +63,7 @@
         })
 </script> 
 
-
-<!-- Фон (background) --> 
+<!-- Фон (background) -->
 <style>
 body{
 background: #159957; 
@@ -72,5 +71,3 @@ background: -webkit-linear-gradient(to right, #155799, #159957);
 background: linear-gradient(to right, #155799, #159957); 
 }
 </style>
-
-

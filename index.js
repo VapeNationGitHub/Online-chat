@@ -3,8 +3,8 @@
 
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);    // 1. Подключили библиотеку Soket.io к нашему веб-серверу
-var id = Math.round(Math.random()*10000);
+var io = require('socket.io')(http);   
+
 
 
 app.get('/', function(req, res){
@@ -16,8 +16,8 @@ http.listen(3000, function() {
 });
 
 users = [];
-io.on('connection', function(socket){              // 2. Установили событие "connection", которое будет сробатывать каждый раз, когда клиент будет устанавливать соединение с нашим веб-сокетом
-  console.log('Подключился новый пользователь ' + id);
+io.on('connection', function(socket){             
+  console.log('Подключился новый пользователь ')
   socket.on('setUsername', function(data){
     console.log(data);
     if(users.indexOf(data) > -1){
@@ -29,13 +29,13 @@ io.on('connection', function(socket){              // 2. Установили с
     }
   });
 
-  socket.on('msg', function(data){                  // 6. Здесь же мы можем отловить это событие и для этого мы обращаемся к текущему объекту сокет, вызываем у него функцию 
-      console.log(data);                            // "on" и отлавливаем событие "message". Дальше мы получаем даные, которые нам прислал пользователь в колбэк функции и отправляем это сообщение всем нашим клиентам, включая текущего.
-      io.emit('newmsg', data);                      //Для этого мы обращаемся к объекту "io", вызываем у него метод "emit", т.е. создаем новое событие "new message" и передаем туда текст нашего сообщения.
+  socket.on('msg', function(data){                  
+      console.log(data);                            
+      io.emit('newmsg', data);                      
   })
 
   socket.on('disconnect', function(){
-          console.log('Пользователь ' + id + ' отключился');
+          console.log('Пользователь отключился'); 
       });
 });
 
